@@ -6,67 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>681</width>
-    <height>680</height>
+    <width>1047</width>
+    <height>784</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,10,1,1">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,6,1,1">
-      <item>
-       <widget class="QPushButton" name="open_dir_btn">
-        <property name="text">
-         <string>Open Dir</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="open_files_btn">
-        <property name="text">
-         <string>Open Files</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="mode_label">
-        <property name="text">
-         <string>Current Processing Mode:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="processing_mode_btn">
-        <property name="text">
-         <string>Copy</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="fd_info_label">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="10,1,1">
     <item>
      <widget class="QLabel" name="img_show_label">
       <property name="sizePolicy">
@@ -84,11 +32,38 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,8,0,0,0,0">
+      <item>
+       <widget class="QLabel" name="mode_label">
+        <property name="text">
+         <string>Current Processing Mode:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="processing_mode_btn">
+        <property name="text">
+         <string>Copy</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item>
        <widget class="QRadioButton" name="type3_btn">
         <property name="text">
-         <string>aslb</string>
+         <string>abox</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -114,7 +89,7 @@
       <item>
        <widget class="QRadioButton" name="type1_btn">
         <property name="text">
-         <string>abox</string>
+         <string>aslb</string>
         </property>
         <attribute name="buttonGroup">
          <string notr="true">type_btn_group</string>
@@ -134,7 +109,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="8,1,1">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="9,1,0,0,0,0">
       <item>
        <widget class="QLabel" name="processed_info_label">
         <property name="text">
@@ -156,6 +131,33 @@
        </spacer>
       </item>
       <item>
+       <widget class="QRadioButton" name="delete_btn">
+        <property name="text">
+         <string>Delete</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">type_btn_group</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="skip_btn">
+        <property name="text">
+         <string>Skip</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">type_btn_group</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="redo_btn">
+        <property name="text">
+         <string>Redo</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="undo_btn">
         <property name="text">
          <string>Undo</string>
@@ -166,6 +168,164 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menu_bar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1047</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="file_menu">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="open_dir_act"/>
+    <addaction name="open_dir_adv_act"/>
+    <addaction name="open_files_act"/>
+    <addaction name="separator"/>
+    <addaction name="import_file_list_act"/>
+    <addaction name="export_file_list_act"/>
+    <addaction name="clear_file_list_act"/>
+    <addaction name="separator"/>
+    <addaction name="export_log_act"/>
+   </widget>
+   <widget class="QMenu" name="edit_menu">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="undo_act"/>
+    <addaction name="redo_act"/>
+    <addaction name="separator"/>
+    <addaction name="skip_act"/>
+    <addaction name="delete_act"/>
+    <addaction name="separator"/>
+    <addaction name="add_tag_act"/>
+    <addaction name="remove_tag_act"/>
+    <addaction name="rename_tag_act"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="view_menu">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="refresh_act"/>
+   </widget>
+   <widget class="QMenu" name="window_menu">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="help_menu">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+   <addaction name="file_menu"/>
+   <addaction name="edit_menu"/>
+   <addaction name="view_menu"/>
+   <addaction name="window_menu"/>
+   <addaction name="help_menu"/>
+  </widget>
+  <widget class="QToolBar" name="tool_bar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="open_dir_act"/>
+   <addaction name="open_dir_adv_act"/>
+   <addaction name="open_files_act"/>
+   <addaction name="separator"/>
+   <addaction name="import_file_list_act"/>
+   <addaction name="export_file_list_act"/>
+   <addaction name="clear_file_list_act"/>
+   <addaction name="separator"/>
+   <addaction name="export_log_act"/>
+   <addaction name="separator"/>
+   <addaction name="refresh_act"/>
+  </widget>
+  <widget class="QStatusBar" name="status_bar"/>
+  <action name="open_dir_act">
+   <property name="text">
+    <string>Open Dir</string>
+   </property>
+  </action>
+  <action name="open_dir_adv_act">
+   <property name="text">
+    <string>Open Dir (adv)</string>
+   </property>
+  </action>
+  <action name="open_files_act">
+   <property name="text">
+    <string>Open Files</string>
+   </property>
+  </action>
+  <action name="import_file_list_act">
+   <property name="text">
+    <string>Import File List</string>
+   </property>
+  </action>
+  <action name="export_file_list_act">
+   <property name="text">
+    <string>Export File List</string>
+   </property>
+  </action>
+  <action name="clear_file_list_act">
+   <property name="text">
+    <string>Clear File List</string>
+   </property>
+  </action>
+  <action name="refresh_act">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="undo_act">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="redo_act">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="add_tag_act">
+   <property name="text">
+    <string>Add Tag</string>
+   </property>
+  </action>
+  <action name="remove_tag_act">
+   <property name="text">
+    <string>Remove Tag</string>
+   </property>
+  </action>
+  <action name="rename_tag_act">
+   <property name="text">
+    <string>Rename Tag</string>
+   </property>
+  </action>
+  <action name="export_log_act">
+   <property name="text">
+    <string>Export Log</string>
+   </property>
+  </action>
+  <action name="delete_act">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="skip_act">
+   <property name="text">
+    <string>Skip</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
