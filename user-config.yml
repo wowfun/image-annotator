@@ -1,0 +1,12 @@
+conf_for_fau:
+  default processing mode: Copy
+  image default display size:
+  - 600
+  - 600
+  root for file dialog init open: ./imgs/
+  root for tagging results: ./results/
+  tags set:
+  - abox
+  - arbx
+  - aslb
+  - aslw

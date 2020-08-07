@@ -1,0 +1,11 @@
+default: &default
+  root for file dialog init open: '.'
+  root for tagging results: './results/'
+  default processing mode: Copy
+  image default display size: [600,600] # h,w
+  tags set:
+    - Tag0
+    - Tag1
+    - Tag2
+    - Tag3
+
