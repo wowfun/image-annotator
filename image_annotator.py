@@ -1,10 +1,11 @@
 import os
-import time
 import shutil
+import time
+
 import pandas as pd
-from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog, QLineEdit, QRadioButton
 from PySide2.QtGui import QPixmap, Qt, QMovie
 from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog, QLineEdit, QRadioButton
 
 from configurator import Configurator
 
@@ -16,7 +17,7 @@ class ImageAnnotator:
     def __init__(self, configurator=None):
         self.ui = QUiLoader().load('ui/main.ui')
         self.user_config_file = 'user-config.yml'
-        self.user_config_name = 'conf_for_fau'
+        self.user_config_name = 'using conf'
         if configurator:
             self.configurator = configurator
         else:
