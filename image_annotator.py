@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 
+import PySide2
 import pandas as pd
 from PySide2.QtGui import QPixmap, Qt, QMovie
 from PySide2.QtUiTools import QUiLoader
@@ -9,8 +10,9 @@ from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDial
 
 from configurator import Configurator
 
-os.environ[
-    'QT_QPA_PLATFORM_PLUGIN_PATH'] = '/Users/kevin/opt/anaconda3/envs/ml/lib/python3.7/site-packages/PySide2/Qt/plugins'
+dirname = os.path.dirname(PySide2.__file__)
+qt_plugin_path = os.path.join(dirname, 'Qt', 'plugins')
+os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = qt_plugin_path
 
 
 class ImageAnnotator:
@@ -396,8 +398,9 @@ class ImageAnnotator:
             '待完成')
 
 
-app = QApplication([])
-image_annotator = ImageAnnotator()
-image_annotator.ui.show()
-app.exec_()
-image_annotator.save_settings()
+if __name__ == '__main__':
+    app = QApplication([])
+    image_annotator = ImageAnnotator()
+    image_annotator.ui.show()
+    app.exec_()
+    image_annotator.save_settings()
