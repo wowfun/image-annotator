@@ -4,7 +4,7 @@ import time
 
 import PySide2
 import pandas as pd
-from PySide2.QtGui import QPixmap, Qt, QMovie
+from PySide2.QtGui import QPixmap, Qt, QMovie, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog, QLineEdit, QRadioButton
 
@@ -25,16 +25,18 @@ class ImageAnnotator:
         else:
             self.configurator = Configurator(self.user_config_file, self.user_config_name)
 
+        self.setup_ui_add_icons()
+
         # main ui handle
         # menu bar
         # QApplication.processEvents()
         self.ui.open_dir_act.triggered.connect(self.open_dir)
+        self.ui.open_dir_adv_act.triggered.connect(self.open_dir_adv)
         self.ui.open_files_act.triggered.connect(self.open_files)
-        self.ui.open_dir_adv_act.triggered.connect(self.open_files)
         self.ui.import_file_list_act.triggered.connect(self.popup_message_box)
         self.ui.export_file_list_act.triggered.connect(self.popup_message_box)
         self.ui.clear_file_list_act.triggered.connect(self.clear_file_list)
-        self.ui.export_tagging_results_act.triggered.connect(self.export_tagging_results)
+        self.ui.save_tagging_results_act.triggered.connect(self.save_tagging_results)
         self.ui.preferences_act.triggered.connect(self.show_preferences)
         # menu edit
         # self.ui.edit_menu.exec_()
@@ -72,6 +74,18 @@ class ImageAnnotator:
         self.configurator.using_conf_changed_dict['tags set'] = True
         self.get_and_set_ui()
         self.configurator.using_conf_changed_dict['tags set'] = False
+
+    def setup_ui_add_icons(self):
+        self.ui.open_dir_act.setIcon(QIcon("resources/images/open-dir-16.ico"))
+        self.ui.open_dir_adv_act.setIcon(QIcon("resources/images/open-dir-adv-16.ico"))
+        self.ui.open_files_act.setIcon(QIcon("resources/images/open-files-16.ico"))
+        self.ui.clear_file_list_act.setIcon(QIcon("resources/images/clear-file-list-16.ico"))
+        self.ui.save_tagging_results_act.setIcon(QIcon("resources/images/save-tagging-results-16.ico"))
+        self.ui.add_tag_act.setIcon(QIcon("resources/images/add-tag-16.ico"))
+        self.ui.remove_tag_act.setIcon(QIcon("resources/images/remove-tag-16.ico"))
+        self.ui.rename_tag_act.setIcon(QIcon("resources/images/rename-tag-16.ico"))
+        self.ui.preferences_act.setIcon(QIcon("resources/images/settings-16.ico"))
+        self.ui.refresh_act.setIcon(QIcon("resources/images/refresh-16.ico"))
 
     def confirm_settings(self):
         self.configurator.using_conf_dict = self.configurator.tmp_conf_dict.copy()
@@ -206,7 +220,7 @@ class ImageAnnotator:
             print(self.file_paths)
             self.img_viewer()
 
-    def export_tagging_results(self):
+    def save_tagging_results(self):
         log_dir = self.configurator.using_conf_dict['root for tagging results'] + "/logs/"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)

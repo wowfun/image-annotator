@@ -149,7 +149,7 @@
     <addaction name="export_file_list_act"/>
     <addaction name="clear_file_list_act"/>
     <addaction name="separator"/>
-    <addaction name="export_tagging_results_act"/>
+    <addaction name="save_tagging_results_act"/>
     <addaction name="separator"/>
     <addaction name="preferences_act"/>
    </widget>
@@ -203,12 +203,9 @@
    <addaction name="open_dir_act"/>
    <addaction name="open_dir_adv_act"/>
    <addaction name="open_files_act"/>
+   <addaction name="save_tagging_results_act"/>
    <addaction name="separator"/>
-   <addaction name="import_file_list_act"/>
-   <addaction name="export_file_list_act"/>
    <addaction name="clear_file_list_act"/>
-   <addaction name="separator"/>
-   <addaction name="export_tagging_results_act"/>
    <addaction name="separator"/>
    <addaction name="add_tag_act"/>
    <addaction name="remove_tag_act"/>
@@ -279,9 +276,9 @@
     <string>Rename Tag</string>
    </property>
   </action>
-  <action name="export_tagging_results_act">
+  <action name="save_tagging_results_act">
    <property name="text">
-    <string>Export Tagging Results</string>
+    <string>Save Tagging Results</string>
    </property>
   </action>
   <action name="delete_act">
@@ -300,7 +297,9 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../ui-resources.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="tag_btn_group"/>
