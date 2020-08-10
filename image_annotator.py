@@ -2,8 +2,8 @@ import os
 import shutil
 import time
 
+# for some cases
 import PySide2
-import pandas as pd
 from PySide2.QtGui import QPixmap, Qt, QMovie, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog, QLineEdit, QRadioButton
@@ -29,21 +29,19 @@ class ImageAnnotator:
 
         # main ui handle
         # menu bar
-        # QApplication.processEvents()
         self.ui.open_dir_act.triggered.connect(self.open_dir)
         self.ui.open_dir_adv_act.triggered.connect(self.open_dir_adv)
         self.ui.open_files_act.triggered.connect(self.open_files)
-        self.ui.import_file_list_act.triggered.connect(self.popup_message_box)
-        self.ui.export_file_list_act.triggered.connect(self.popup_message_box)
+        self.ui.import_file_list_act.triggered.connect(self.import_file_list)
+        self.ui.export_file_list_act.triggered.connect(self.export_file_list)
         self.ui.clear_file_list_act.triggered.connect(self.clear_file_list)
         self.ui.save_tagging_results_act.triggered.connect(self.save_tagging_results)
         self.ui.preferences_act.triggered.connect(self.show_preferences)
         # menu edit
-        # self.ui.edit_menu.exec_()
         self.ui.undo_act.triggered.connect(self.undo_op)
         self.ui.redo_act.triggered.connect(self.redo_op)
-        # self.ui.skip_act.triggered.connect(self.undo_processing_op)
-        self.ui.delete_act.triggered.connect(self.popup_message_box)
+        self.ui.skip_act.triggered.connect(self.skip_act_handler)
+        self.ui.delete_act.triggered.connect(self.delete_act_handler)
         self.ui.add_tag_act.triggered.connect(self.add_tag)
         self.ui.remove_tag_act.triggered.connect(self.remove_tag)
         self.ui.rename_tag_act.triggered.connect(self.rename_tag)
@@ -75,6 +73,60 @@ class ImageAnnotator:
         self.get_and_set_ui()
         self.configurator.using_conf_changed_dict['tags set'] = False
 
+    def save_tagging_results(self):
+        save_dir = self.configurator.using_conf_dict['root for tagging results'] + "/logs/"
+        dialog_title = "Save tagging result log"
+        save_init_path = save_dir + "/image-annotation-log-" + time.strftime(
+            "%y%m%d-%H%M%S") + ".csv"
+        file_filter = "Files (*.txt *.csv)"
+        save_path = self.get_save_path(save_dir, dialog_title, save_init_path, file_filter)
+        if save_path != '':
+            self.infos_dict['fd_info'] = "Tagging result log saved at " + save_path
+            self.ui.status_bar.showMessage(self.infos_dict['fd_info'])
+            QApplication.processEvents()
+            with open(save_path, 'w') as f:
+                f.write('Tagging Result Path,\t\t' + 'Tag,\t\t' + 'Source Path,\t\t' +
+                        'Processing Mode\n')
+                for source_path, tag, tagging_result_path, processing_mode in self.undo_op_stack:
+                    f.write(
+                        tagging_result_path + ',\t\t' + tag + ',\t\t' + source_path + ',\t\t' + processing_mode + '\n')
+
+    def get_save_path(self, save_dir, dialog_title, save_init_path, file_filter):
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        save_path, _ = QFileDialog.getSaveFileName(self.ui, dialog_title, save_init_path, file_filter)
+        return save_path
+
+    def import_file_list(self):
+        file_path, _ = QFileDialog.getOpenFileName(self.ui,
+                                                   "Select file with file list",
+                                                   self.configurator.using_conf_dict[
+                                                       'root for tagging results'], "Files (*.txt *.csv)")
+        if file_path == '':
+            self.infos_dict['fd_info'] = "No file selected"
+            self.ui.status_bar.showMessage(self.infos_dict['fd_info'])
+        else:
+            with open(file_path, 'r') as f:
+                for line in f.readlines():
+                    if line.strip('\n'):
+                        self.file_paths.append(line.strip('\n'))
+            print(self.file_paths)
+
+    def export_file_list(self):
+        save_dir = self.configurator.using_conf_dict['root for tagging results'] + "/logs/"
+        dialog_title = "Export file list (contain ALL TYPES of files)"
+        save_init_path = save_dir + "/file-list-" + time.strftime(
+            "%y%m%d-%H%M%S") + ".csv"
+        file_filter = "Files (*.txt *.csv)"
+        save_path = self.get_save_path(save_dir, dialog_title, save_init_path, file_filter)
+        if save_path != '':
+            self.infos_dict['fd_info'] = "File list saved at " + save_path
+            self.ui.status_bar.showMessage(self.infos_dict['fd_info'])
+            QApplication.processEvents()
+            with open(save_path, 'w') as f:
+                for fp in self.file_paths:
+                    f.write(fp + '\n')
+
     def setup_ui_add_icons(self):
         self.ui.open_dir_act.setIcon(QIcon("resources/images/open-dir-16.ico"))
         self.ui.open_dir_adv_act.setIcon(QIcon("resources/images/open-dir-adv-16.ico"))
@@ -86,6 +138,10 @@ class ImageAnnotator:
         self.ui.rename_tag_act.setIcon(QIcon("resources/images/rename-tag-16.ico"))
         self.ui.preferences_act.setIcon(QIcon("resources/images/settings-16.ico"))
         self.ui.refresh_act.setIcon(QIcon("resources/images/refresh-16.ico"))
+        self.ui.skip_act.setIcon(QIcon("resources/images/skip-16.ico"))
+        self.ui.delete_act.setIcon(QIcon("resources/images/delete-16.ico"))
+        self.ui.undo_act.setIcon(QIcon("resources/images/undo-16.ico"))
+        self.ui.redo_act.setIcon(QIcon("resources/images/redo-16.ico"))
 
     def confirm_settings(self):
         self.configurator.using_conf_dict = self.configurator.tmp_conf_dict.copy()
@@ -97,6 +153,11 @@ class ImageAnnotator:
                                          self.user_config_file)
 
     def get_and_set_ui(self):
+        self.tag_dir_dict.clear()
+        self.tag_dir_dict['Delete'] = self.configurator.using_conf_dict[
+                                          'root for tagging results'] + "/Delete"
+        if not os.path.exists(self.tag_dir_dict['Delete']):
+            os.makedirs(self.tag_dir_dict['Delete'])
         self.ui.processing_mode_btn.setText(self.configurator.using_conf_dict['default processing mode'])
         if self.configurator.using_conf_changed_dict['tags set']:
             [tag_btn.deleteLater() for tag_btn in self.ui.tag_btn_group.buttons()[2:]]
@@ -220,23 +281,6 @@ class ImageAnnotator:
             print(self.file_paths)
             self.img_viewer()
 
-    def save_tagging_results(self):
-        log_dir = self.configurator.using_conf_dict['root for tagging results'] + "/logs/"
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-        log_path, _ = QFileDialog.getSaveFileName(self.ui, "Save tagging result log",
-                                                  log_dir + "/image-annotation-log-" + time.strftime(
-                                                      "%y%m%d-%H%M%S") + ".csv",
-                                                  "Files (*.txt *.csv)")
-        if log_path != '':
-            self.infos_dict['fd_info'] = "Log saved at " + log_path
-            self.ui.status_bar.showMessage(self.infos_dict['fd_info'])
-            QApplication.processEvents()
-            df_tagging_results = pd.DataFrame(self.undo_op_stack,
-                                              columns=['Source Path', 'Tag', 'Tagging Result Path',
-                                                       'Processing Mode'])
-            df_tagging_results.to_csv(log_path, index=False)
-
     def img_viewer(self, undo_op=False):
         if self.idx_curr_file >= len(self.file_paths) or len(self.file_paths) == 0:
             self.infos_dict['fd_info'] = "No img"
@@ -270,6 +314,14 @@ class ImageAnnotator:
                     if self.idx_curr_file < 0:
                         self.idx_curr_file = 0
                         break
+
+    def delete_act_handler(self):
+        self.ui.delete_btn.setChecked(True)
+        self.choose_img_tag()
+
+    def skip_act_handler(self):
+        self.ui.skip_btn.setChecked(True)
+        self.choose_img_tag()
 
     def choose_img_tag(self):
         num_files = len(self.file_paths)
@@ -357,7 +409,7 @@ class ImageAnnotator:
                     prev_op_src_path = prev_op_tagging_result
                 self.infos_dict[
                     'processed_info'] = mode + " " + prev_processing_mode + ": " + prev_op_src_path
-            elif prev_processing_mode == "Move":
+            elif prev_processing_mode == "Move" or prev_processing_mode == 'Delete':
                 shutil.move(prev_op_tagging_result, prev_op_src_path)
             elif prev_processing_mode == "Copy":  # Copy
                 if mode == "Undo":
