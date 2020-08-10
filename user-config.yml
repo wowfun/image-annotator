@@ -3,10 +3,10 @@ using conf:
   image default display size:
   - 600
   - 600
-  root for file dialog init open: ./test_imgs/
+  root for file dialog init open: .
   root for tagging results: ./results/
   tags set:
-  - abox
-  - arbx
-  - aslb
-  - aslw
+    - Tag0
+    - Tag1
+    - Tag2
+    - Tag3

@@ -10,14 +10,20 @@ from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDial
 
 from configurator import Configurator
 
+# import main_ui
+
 dirname = os.path.dirname(PySide2.__file__)
 qt_plugin_path = os.path.join(dirname, 'Qt', 'plugins')
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = qt_plugin_path
 
 
+# TODO: 图片放大缩小、填充; About; Help
+
+
 class ImageAnnotator:
     def __init__(self, configurator=None):
         self.ui = QUiLoader().load('ui/main.ui')
+        # self.ui=main_ui.Ui_MainWindow.setupUi()
         self.user_config_file = 'user-config.yml'
         self.user_config_name = 'using conf'
         if configurator:
@@ -128,20 +134,22 @@ class ImageAnnotator:
                     f.write(fp + '\n')
 
     def setup_ui_add_icons(self):
-        self.ui.open_dir_act.setIcon(QIcon("resources/images/open-dir-16.ico"))
-        self.ui.open_dir_adv_act.setIcon(QIcon("resources/images/open-dir-adv-16.ico"))
-        self.ui.open_files_act.setIcon(QIcon("resources/images/open-files-16.ico"))
-        self.ui.clear_file_list_act.setIcon(QIcon("resources/images/clear-file-list-16.ico"))
-        self.ui.save_tagging_results_act.setIcon(QIcon("resources/images/save-tagging-results-16.ico"))
-        self.ui.add_tag_act.setIcon(QIcon("resources/images/add-tag-16.ico"))
-        self.ui.remove_tag_act.setIcon(QIcon("resources/images/remove-tag-16.ico"))
-        self.ui.rename_tag_act.setIcon(QIcon("resources/images/rename-tag-16.ico"))
-        self.ui.preferences_act.setIcon(QIcon("resources/images/settings-16.ico"))
-        self.ui.refresh_act.setIcon(QIcon("resources/images/refresh-16.ico"))
-        self.ui.skip_act.setIcon(QIcon("resources/images/skip-16.ico"))
-        self.ui.delete_act.setIcon(QIcon("resources/images/delete-16.ico"))
-        self.ui.undo_act.setIcon(QIcon("resources/images/undo-16.ico"))
-        self.ui.redo_act.setIcon(QIcon("resources/images/redo-16.ico"))
+        self.ui.setWindowIcon(QIcon(":/icons/resources/images/app-128.png"))
+        self.configurator.preferences_ui.setWindowIcon(QIcon(":/icons/resources/images/settings-16.png"))
+        self.ui.open_dir_act.setIcon(QIcon(":/icons/resources/images/open-dir-16.png"))
+        self.ui.open_dir_adv_act.setIcon(QIcon(":/icons/resources/images/open-dir-adv-16.png"))
+        self.ui.open_files_act.setIcon(QIcon(":/icons/resources/images/open-files-16.png"))
+        self.ui.clear_file_list_act.setIcon(QIcon(":/icons/resources/images/clear-file-list-16.png"))
+        self.ui.save_tagging_results_act.setIcon(QIcon(":/icons/resources/images/save-tagging-results-16.png"))
+        self.ui.add_tag_act.setIcon(QIcon(":/icons/resources/images/add-tag-16.png"))
+        self.ui.remove_tag_act.setIcon(QIcon(":/icons/resources/images/remove-tag-16.png"))
+        self.ui.rename_tag_act.setIcon(QIcon(":/icons/resources/images/rename-tag-16.png"))
+        self.ui.preferences_act.setIcon(QIcon(":/icons/resources/images/settings-16.png"))
+        self.ui.refresh_act.setIcon(QIcon(":/icons/resources/images/refresh-16.png"))
+        self.ui.skip_act.setIcon(QIcon(":/icons/resources/images/skip-16.png"))
+        self.ui.delete_act.setIcon(QIcon(":/icons/resources/images/delete-16.png"))
+        self.ui.undo_act.setIcon(QIcon(":/icons/resources/images/undo-16.png"))
+        self.ui.redo_act.setIcon(QIcon(":/icons/resources/images/redo-16.png"))
 
     def confirm_settings(self):
         self.configurator.using_conf_dict = self.configurator.tmp_conf_dict.copy()
@@ -300,7 +308,16 @@ class ImageAnnotator:
                     break
                 pixmap = QPixmap(img_path)
                 if not pixmap.isNull():
-                    self.ui.img_show_label.setPixmap(pixmap.scaled(600, 600, aspectMode=Qt.KeepAspectRatio))
+                    max_h = self.ui.img_show_label.height()
+                    max_w = self.ui.img_show_label.width()
+                    if max_h > self.configurator.using_conf_dict['image default display size'][0]:
+                        max_h = self.configurator.using_conf_dict['image default display size'][0]
+                    if max_w > self.configurator.using_conf_dict['image default display size'][1]:
+                        max_w = self.configurator.using_conf_dict['image default display size'][1]
+                    self.ui.img_show_label.setPixmap(
+                        pixmap.scaled(max_w,
+                                      max_h,
+                                      aspectMode=Qt.KeepAspectRatio))
                     # QApplication.processEvents()
                     self.infos_dict['fd_info'] = "%d/%d: %s" % (
                         self.idx_curr_file, len(self.file_paths), self.file_paths[self.idx_curr_file])

@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="icons">
+        <file>resources/images/app-128.png</file>
+        <file>resources/images/add-tag-16.png</file>
+        <file>resources/images/clear-file-list-16.png</file>
+        <file>resources/images/delete-16.png</file>
+        <file>resources/images/open-dir-16.png</file>
+        <file>resources/images/open-dir-adv-16.png</file>
+        <file>resources/images/open-files-16.png</file>
+        <file>resources/images/redo-16.png</file>
+        <file>resources/images/refresh-16.png</file>
+        <file>resources/images/remove-tag-16.png</file>
+        <file>resources/images/rename-tag-16.png</file>
+        <file>resources/images/save-tagging-results-16.png</file>
+        <file>resources/images/settings-16.png</file>
+        <file>resources/images/skip-16.png</file>
+        <file>resources/images/undo-16.png</file>
+    </qresource>
+</RCC>

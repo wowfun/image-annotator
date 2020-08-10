@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1047</width>
-    <height>784</height>
+       <height>785</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -42,7 +42,7 @@
       <item>
        <widget class="QLabel" name="mode_label">
         <property name="text">
-         <string>Current Processing Mode:</string>
+            <string>Mode Using:</string>
         </property>
        </widget>
       </item>
@@ -134,7 +134,7 @@
      <x>0</x>
      <y>0</y>
      <width>1047</width>
-     <height>22</height>
+        <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -297,9 +297,7 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="../ui-resources.qrc"/>
- </resources>
+    <resources/>
  <connections/>
  <buttongroups>
   <buttongroup name="tag_btn_group"/>

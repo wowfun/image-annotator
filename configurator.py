@@ -1,4 +1,5 @@
-# import os
+import os
+
 import yaml
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QDialogButtonBox
@@ -25,6 +26,8 @@ class Configurator:
         }
         self.using_conf_dict = self.default_conf_dict.copy()  # using conf
         self.read_conf_file('default', 'application-config.yml')  # read default
+        if not os.path.exists(self.conf_file_path):
+            self.save_conf_file(self.using_conf_dict, 'using conf', 'user-config.yml')
 
         if self.conf_file_path:
             self.read_conf_file(self.conf_to_get, self.conf_file_path)

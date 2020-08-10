@@ -4,9 +4,9 @@ block_cipher = None
 
 
 a = Analysis(['image_annotator.py'],
-             pathex=['E:\\Projects\\image-annotator-test'],
+             pathex=['E:\\Projects\\image-annotator'],
              binaries=[],
-             datas=[('ui', 'ui'), ('user-config.yml', '.'), ('application-config.yml', '.')],
+             datas=[('ui', 'ui'), ('user-config.yml', '.'), ('application-config.yml', '.'), ('resources','resources')],
              hiddenimports=['PySide2.QtXml'],
              hookspath=[],
              runtime_hooks=[],
@@ -26,7 +26,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False , icon='icons\\win-app-16.ico')
+          console=False , icon='resources/images/win-app-16.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
