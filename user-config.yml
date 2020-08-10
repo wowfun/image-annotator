@@ -6,7 +6,7 @@ using conf:
   root for file dialog init open: .
   root for tagging results: ./results/
   tags set:
-    - Tag0
-    - Tag1
-    - Tag2
-    - Tag3
+  - Tag0
+  - Tag1
+  - Tag2
+  - Tag3

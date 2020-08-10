@@ -1,6 +1,7 @@
 import os
 import shutil
 import time
+# import main_ui
 
 # for some cases
 import PySide2
@@ -9,13 +10,11 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog, QLineEdit, QRadioButton
 
 from configurator import Configurator
-
-# import main_ui
+import main_rc
 
 dirname = os.path.dirname(PySide2.__file__)
 qt_plugin_path = os.path.join(dirname, 'Qt', 'plugins')
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = qt_plugin_path
-
 
 # TODO: 图片放大缩小、填充; About; Help
 
@@ -308,11 +307,11 @@ class ImageAnnotator:
                     break
                 pixmap = QPixmap(img_path)
                 if not pixmap.isNull():
-                    max_h = self.ui.img_show_label.height()
-                    max_w = self.ui.img_show_label.width()
-                    if max_h > self.configurator.using_conf_dict['image default display size'][0]:
-                        max_h = self.configurator.using_conf_dict['image default display size'][0]
-                    if max_w > self.configurator.using_conf_dict['image default display size'][1]:
+                    max_h=self.ui.img_show_label.height()
+                    max_w=self.ui.img_show_label.width()
+                    if max_h>self.configurator.using_conf_dict['image default display size'][0]:
+                        max_h=self.configurator.using_conf_dict['image default display size'][0]
+                    if max_w>self.configurator.using_conf_dict['image default display size'][1]:
                         max_w = self.configurator.using_conf_dict['image default display size'][1]
                     self.ui.img_show_label.setPixmap(
                         pixmap.scaled(max_w,
