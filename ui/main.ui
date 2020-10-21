@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1047</width>
-    <height>785</height>
+    <width>1336</width>
+    <height>773</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -133,7 +133,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1047</width>
+     <width>1336</width>
      <height>23</height>
     </rect>
    </property>
@@ -162,6 +162,8 @@
     <addaction name="separator"/>
     <addaction name="skip_act"/>
     <addaction name="delete_act"/>
+    <addaction name="rotate_right_act"/>
+    <addaction name="rotate_left_act"/>
     <addaction name="separator"/>
     <addaction name="add_tag_act"/>
     <addaction name="remove_tag_act"/>
@@ -183,6 +185,7 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="about_act"/>
    </widget>
    <addaction name="file_menu"/>
    <addaction name="edit_menu"/>
@@ -210,6 +213,9 @@
    <addaction name="add_tag_act"/>
    <addaction name="remove_tag_act"/>
    <addaction name="rename_tag_act"/>
+   <addaction name="separator"/>
+   <addaction name="rotate_left_act"/>
+   <addaction name="rotate_right_act"/>
    <addaction name="separator"/>
    <addaction name="preferences_act"/>
    <addaction name="separator"/>
@@ -294,6 +300,21 @@
   <action name="preferences_act">
    <property name="text">
     <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="rotate_right_act">
+   <property name="text">
+    <string>Rotate Right</string>
+   </property>
+  </action>
+  <action name="rotate_left_act">
+   <property name="text">
+    <string>Rotate Left</string>
+   </property>
+  </action>
+  <action name="about_act">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

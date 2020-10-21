@@ -4,4 +4,8 @@
 test_imgs
 results
 
+# python
+__pycache__
+
 test*.*
+

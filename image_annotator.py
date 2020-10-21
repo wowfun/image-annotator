@@ -1,11 +1,13 @@
 import os
 import shutil
 import time
+from PIL import Image, ExifTags
+# import multiprocessing
 # import main_ui
 
 # for some cases
 import PySide2
-from PySide2.QtGui import QPixmap, Qt, QMovie, QIcon
+from PySide2.QtGui import QPixmap, Qt, QMovie, QIcon, QTransform
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog, QLineEdit, QRadioButton
 
@@ -16,11 +18,17 @@ dirname = os.path.dirname(PySide2.__file__)
 qt_plugin_path = os.path.join(dirname, 'Qt', 'plugins')
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = qt_plugin_path
 
-# TODO: 图片放大缩小、填充; About; Help
+
+# TODO: 自动保存操作日志（含设置项）; 显示文件列表; 对话路径记忆;
 
 
 class ImageAnnotator:
     def __init__(self, configurator=None):
+        self.about_dict = {
+            "version": "6.1.3",
+            "source": "https://github.com/wowfun/image-annotator",
+            "author": "Sinputer"
+        }
         self.ui = QUiLoader().load('ui/main.ui')
         # self.ui=main_ui.Ui_MainWindow.setupUi()
         self.user_config_file = 'user-config.yml'
@@ -47,6 +55,8 @@ class ImageAnnotator:
         self.ui.redo_act.triggered.connect(self.redo_op)
         self.ui.skip_act.triggered.connect(self.skip_act_handler)
         self.ui.delete_act.triggered.connect(self.delete_act_handler)
+        self.ui.rotate_right_act.triggered.connect(self.rotate_right)
+        self.ui.rotate_left_act.triggered.connect(self.rotate_left)
         self.ui.add_tag_act.triggered.connect(self.add_tag)
         self.ui.remove_tag_act.triggered.connect(self.remove_tag)
         self.ui.rename_tag_act.triggered.connect(self.rename_tag)
@@ -57,6 +67,9 @@ class ImageAnnotator:
         self.ui.tag_btn_group.buttonClicked.connect(self.choose_img_tag)
         self.ui.undo_btn.clicked.connect(self.undo_op)
         self.ui.redo_btn.clicked.connect(self.redo_op)
+
+        # help
+        self.ui.about_act.triggered.connect(self.show_about)
 
         # preferences ui handle
         self.configurator.preferences_ui.dialog_btn_box.accepted.connect(self.confirm_settings)
@@ -77,6 +90,30 @@ class ImageAnnotator:
         self.configurator.using_conf_changed_dict['tags set'] = True
         self.get_and_set_ui()
         self.configurator.using_conf_changed_dict['tags set'] = False
+
+    def show_about(self):
+        msg="Version: v"+self.about_dict['version']+"\nSource: "+self.about_dict['source']+"\nAuthor: "+self.about_dict['author']
+        QMessageBox.about(self.ui, "About", msg)
+
+    def rotate_right(self):
+        self.image_processing("Right", self.file_paths[self.idx_curr_file])
+        self.img_viewer()
+
+    def rotate_left(self):
+        self.image_processing("Left", self.file_paths[self.idx_curr_file])
+        self.img_viewer()
+
+    def image_processing(self, mode, img_path):
+        try:
+            image = Image.open(img_path)
+            if mode == "Right":
+                image = image.rotate(270, expand=True)
+            elif mode == "Left":
+                image = image.rotate(90, expand=True)
+            image.save(img_path)
+            image.close()
+        except Exception:
+            pass
 
     def save_tagging_results(self):
         save_dir = self.configurator.using_conf_dict['root for tagging results'] + "/logs/"
@@ -149,6 +186,8 @@ class ImageAnnotator:
         self.ui.delete_act.setIcon(QIcon(":/icons/resources/images/delete-16.png"))
         self.ui.undo_act.setIcon(QIcon(":/icons/resources/images/undo-16.png"))
         self.ui.redo_act.setIcon(QIcon(":/icons/resources/images/redo-16.png"))
+        self.ui.rotate_left_act.setIcon(QIcon(":/icons/resources/images/rotate-left-16.png"))
+        self.ui.rotate_right_act.setIcon(QIcon(":/icons/resources/images/rotate-right-16.png"))
 
     def confirm_settings(self):
         self.configurator.using_conf_dict = self.configurator.tmp_conf_dict.copy()
@@ -307,11 +346,38 @@ class ImageAnnotator:
                     break
                 pixmap = QPixmap(img_path)
                 if not pixmap.isNull():
-                    max_h=self.ui.img_show_label.height()
-                    max_w=self.ui.img_show_label.width()
-                    if max_h>self.configurator.using_conf_dict['image default display size'][0]:
-                        max_h=self.configurator.using_conf_dict['image default display size'][0]
-                    if max_w>self.configurator.using_conf_dict['image default display size'][1]:
+                    try:
+                        image = Image.open(img_path)
+                        rotated_flag = False
+                        angle = 0
+                        for orientation in ExifTags.TAGS.keys():
+                            if ExifTags.TAGS[orientation] == 'Orientation':
+                                break
+                        exif = dict(image._getexif().items())
+                        print(img_path, " exif: ", exif[orientation])
+                        if exif[orientation] == 3:
+                            angle = 180
+                            rotated_flag = True
+                        elif exif[orientation] == 6:
+                            angle = 270
+                            rotated_flag = True
+                        elif exif[orientation] == 8:
+                            angle = 90
+                            rotated_flag = True
+                        if rotated_flag:
+                            pixmap = pixmap.transformed(QTransform().rotate(-angle))
+                            image = image.rotate(angle, expand=True)
+                            image.save(img_path)
+                            image.close()
+                    except (AttributeError, KeyError, IndexError):
+                        # cases: image don't have getexif
+                        pass
+
+                    max_h = self.ui.img_show_label.height()
+                    max_w = self.ui.img_show_label.width()
+                    if max_h > self.configurator.using_conf_dict['image default display size'][0]:
+                        max_h = self.configurator.using_conf_dict['image default display size'][0]
+                    if max_w > self.configurator.using_conf_dict['image default display size'][1]:
                         max_w = self.configurator.using_conf_dict['image default display size'][1]
                     self.ui.img_show_label.setPixmap(
                         pixmap.scaled(max_w,
@@ -473,14 +539,9 @@ class ImageAnnotator:
                           self.configurator.using_conf_dict['image default display size'][0],
                           aspectMode=Qt.KeepAspectRatio))
 
-    def popup_message_box(self):
-        QMessageBox.about(
-            self.ui,
-            'Tip',
-            '待完成')
-
 
 if __name__ == '__main__':
+    # multiprocessing.freeze_support()
     app = QApplication([])
     image_annotator = ImageAnnotator()
     image_annotator.ui.show()
